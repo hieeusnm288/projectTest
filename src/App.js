@@ -1,18 +1,29 @@
 import "./App.scss";
 import TableUser from "./componemt/TableUser";
-import { Switch, Router, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import UpdateUser from "./componemt/UpdateUsers";
-import { createBrowserHistory } from "history";
-import { _student } from "./utils/Settings/configPath";
-export const history = createBrowserHistory();
+import { ToastContainer } from "react-toastify";
+
 function App() {
   return (
-    <Router history={history}>
-      <Switch>
-        <Route path="/" exact component={TableUser} />
-        <Route path={`${_student}/:id`} exact component={UpdateUser} />
-      </Switch>
-    </Router>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<TableUser />} />
+        <Route path="/student/:id" element={<UpdateUser />} />
+      </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </div>
   );
 }
 

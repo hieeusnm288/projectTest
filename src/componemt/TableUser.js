@@ -4,7 +4,6 @@ import { Table, Pagination } from "antd";
 import ModalAddUser from "./ModalAddUser";
 import { BrowserRouter as Router, NavLink } from "react-router-dom";
 import UpdateUser from "./UpdateUsers";
-import { history } from "../App";
 
 function TableUser(props) {
   const [listUser, setListUser] = useState([]);
@@ -34,19 +33,12 @@ function TableUser(props) {
       key: "phone",
     },
     {
-      title: "Acction",
-      dataIndex: "id",
-      render: (text, item) => {
-        return (
-          <button
-            className="mx-4 text-green-500 hover:text-green-900"
-            title="Sửa"
-            onClick={() => {
-              history.push(`/student/${item.id}`);
-            }}
-          ></button>
-        );
-      },
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (datauser) => (
+        <NavLink to={`/student/${datauser.id}`}>Sửa</NavLink>
+      ),
     },
   ];
 
@@ -58,9 +50,8 @@ function TableUser(props) {
     setListUser([users, ...listUser]);
   };
   const data = listUser;
-  console.log(data);
+  // console.log(data);
   useEffect(() => {
-    // Call APIs
     getUser(0);
   }, []);
   const getUser = async (page) => {
@@ -70,8 +61,14 @@ function TableUser(props) {
       setListUser(res.data);
       setTotalPages(res.total_page);
     }
-    console.log(data);
+    // console.log(data);
   };
+
+  // const getDataUser = (datauser) => {
+  //   setListUser((data) => {
+  //     data.filter((user) => user.id === datauser.id);
+  //   });
+  // };
 
   return (
     <>
@@ -92,7 +89,9 @@ function TableUser(props) {
         handleClose={handleClose}
         handleUpdateTable={handleUpdateTable}
       />
-      <UpdateUser />
+      <div className="d-none">
+        <UpdateUser listUser={listUser} setListUser={setListUser} />
+      </div>
     </>
   );
 }

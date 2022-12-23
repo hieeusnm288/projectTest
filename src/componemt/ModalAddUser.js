@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, Radio } from "antd";
 import { createUser } from "../Service/UserService";
+import { toast } from "react-toastify";
 
 const layout = {
   labelCol: {
@@ -11,56 +12,27 @@ const layout = {
   },
 };
 
-const validateMessages = {
-  required: "${label} is required!",
-  types: {
-    email: "${label} is not a valid email!",
-    number: "${label} is not a valid number!",
-  },
-};
-
 function ModalAddUser(props) {
   const { show, handleClose, handleUpdateTable } = props;
-  const [username, setUsername] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [gender, setGender] = useState(0);
+  const [form] = Form.useForm();
+  const [newUser, setNewUser] = useState({});
 
-  const handleSaveUser = async () => {
-    let res = await createUser(
-      username,
-      firstname,
-      lastname,
-      email,
-      phone,
-      address,
-      birthday,
-      gender
-    );
+  const onFinish = async (values) => {
+    setNewUser(values);
+    let res = await createUser(values);
     if (res && res.statusCode === 200) {
+      handleUpdateTable(values);
+      form.resetFields();
       handleClose();
-      setUsername("");
-      setFirstname("");
-      setLastname("");
-      setEmail("");
-      setPhone("");
-      setAddress("");
-      setBirthday("");
-      setGender("");
-
-      handleUpdateTable({
-        username: username,
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        phone: phone,
-        address: address,
-        birthday: birthday,
-        gender: gender,
+      toast.success("Thêm mới thành công", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
     }
   };
@@ -75,92 +47,82 @@ function ModalAddUser(props) {
       >
         <Form
           {...layout}
-          name="nest-messages"
-          onFinish={handleSaveUser}
-          validateMessages={validateMessages}
+          initialValues={{ remember: true }}
+          form={form}
+          name="basic"
+          onFinish={onFinish}
+          autoComplete="off"
         >
           <Form.Item
-            name={["user", "username"]}
+            name="username"
             label="Tên đăng nhập"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
             rules={[
               {
                 required: true,
+                message: "Please input your username!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "lastname"]}
+            name="lastname"
             label="Họ"
-            value={lastname}
-            onChange={(event) => setLastname(event.target.value)}
             rules={[
               {
                 required: true,
+                message: "Please input your lastname!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "firstname"]}
+            name="firstname"
             label="Tên"
-            value={firstname}
-            onChange={(event) => setFirstname(event.target.value)}
             rules={[
               {
                 required: true,
+                message: "Please input your firstname!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "email"]}
+            name="email"
             label="Email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
             rules={[
               {
-                type: "email",
                 required: true,
+                message: "Please input your email!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "phone"]}
+            name="phone"
             label="Số điện thoại"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
             rules={[
               {
                 required: true,
+                message: "Please input your phone!",
               },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name={["user", "address"]}
-            label="Địa chỉ"
-            value={address}
-            onChange={(event) => setAddress(event.target.value)}
-          >
+          <Form.Item name="address" label="Địa chỉ">
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "birthday"]}
+            name="birthday"
             label="Ngày sinh"
-            value={birthday}
-            onChange={(event) => setBirthday(event.target.value)}
             rules={[
               {
                 required: true,
+                message: "Please input your birthday!",
               },
             ]}
           >
@@ -175,8 +137,8 @@ function ModalAddUser(props) {
             ]}
           >
             <Radio.Group>
-              <Radio value="1"> Nam </Radio>
-              <Radio value="0"> Nữ</Radio>
+              <Radio value={1}> Nam </Radio>
+              <Radio value={0}> Nữ</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item

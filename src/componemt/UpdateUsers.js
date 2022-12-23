@@ -9,120 +9,117 @@ const layout = {
     span: 16,
   },
 };
-const validateMessages = {
-  required: "${label} is required!",
-  types: {
-    email: "${label} is not a valid email!",
-    number: "${label} is not a valid number!",
-  },
-};
-function UpdateUser() {
-  const [getuser, setGetUser] = useState({});
-  const [username, setUsername] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [gender, setGender] = useState(0);
+function UpdateUser(props) {
+  const { listUser, setListUser } = props;
+  const [idUser, setIdUser] = useState(0);
+
+  const [form] = Form.useForm();
   useEffect(() => {
-    getUserId(190);
-    setUsername(getuser.name);
-    setFirstname(getuser.firstname);
-    setLastname(getuser.lastname);
-    setEmail(getuser.email);
-    setPhone(getuser.phone);
-    setAddress(getuser.address);
-    setBirthday(getuser.birthday);
-    setGender(getuser.gender);
+    console.log(listUser);
+    fillToForm(190);
   }, []);
 
-  const getUserId = async (id) => {
+  const fillToForm = async (id) => {
     let res = await getUserById(id);
     console.log(res);
-    if (res) {
-      setGetUser(res);
-    }
-    console.log("check getUser:>>>");
+    form.setFieldsValue({
+      username: res.username,
+      lastname: res.lastname,
+      firstname: res.firstname,
+      email: res.email,
+      phone: res.phone,
+      address: res.address,
+      birthday: res.birthday,
+    });
   };
+
+  const onFinish = (value) => {
+    form.resetFields();
+    console.log(value);
+  };
+
   return (
     <>
       <h2>Chỉnh Sửa Thông Tin</h2>
       <div className="container">
         <Form
           {...layout}
-          name="nest-messages"
-          onFinish={0}
-          validateMessages={validateMessages}
+          initialValues={{ remember: true }}
+          form={form}
+          name="basic"
+          onFinish={onFinish}
+          autoComplete="off"
         >
           <Form.Item
-            name={["user", "username"]}
+            name="username"
             label="Tên đăng nhập"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
             rules={[
               {
                 required: true,
+                message: "Please input your username!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "lastname"]}
+            name="lastname"
             label="Họ"
             rules={[
               {
                 required: true,
+                message: "Please input your lastname!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "firstname"]}
+            name="firstname"
             label="Tên"
             rules={[
               {
                 required: true,
+                message: "Please input your firstname!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "email"]}
+            name="email"
             label="Email"
             rules={[
               {
-                type: "email",
                 required: true,
+                message: "Please input your email!",
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "phone"]}
+            name="phone"
             label="Số điện thoại"
             rules={[
               {
                 required: true,
+                message: "Please input your phone!",
               },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item name={["user", "address"]} label="Địa chỉ">
+          <Form.Item name="address" label="Địa chỉ">
             <Input />
           </Form.Item>
           <Form.Item
-            name={["user", "birthday"]}
+            name="birthday"
             label="Ngày sinh"
             rules={[
               {
                 required: true,
+                message: "Please input your birthday!",
               },
             ]}
           >
@@ -137,8 +134,8 @@ function UpdateUser() {
             ]}
           >
             <Radio.Group>
-              <Radio value="1"> Nam </Radio>
-              <Radio value="0"> Nữ</Radio>
+              <Radio value={1}> Nam </Radio>
+              <Radio value={0}> Nữ</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item
