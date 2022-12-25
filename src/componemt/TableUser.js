@@ -1,8 +1,17 @@
 import { getAllUser } from "../Service/UserService";
 import { useEffect, useState } from "react";
-import { Table, Pagination } from "antd";
+import { Table, Pagination, Button } from "antd";
 import ModalAddUser from "./ModalAddUser";
-import { BrowserRouter as Router, NavLink } from "react-router-dom";
+import { history } from "../App";
+import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
+
+import {
+  BrowserRouter as Router,
+  NavLink,
+  HistoryRouterProps,
+} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import UpdateUser from "./UpdateUsers";
 
 function TableUser(props) {
@@ -10,6 +19,11 @@ function TableUser(props) {
   const [totalUsers, setTotalUser] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [showModalAdd, setShowModalAdd] = useState(false);
+  const navigate = useNavigate();
+
+  const pageUpdate = (datauser) => {
+    navigate(`/student/${datauser.id}`);
+  };
 
   const columns = [
     {
@@ -37,7 +51,16 @@ function TableUser(props) {
       dataIndex: "",
       key: "x",
       render: (datauser) => (
-        <NavLink to={`/student/${datauser.id}`}>Sửa</NavLink>
+        //
+        <>
+          <Button
+            onClick={() => {
+              pageUpdate(datauser);
+            }}
+          >
+            Sửa
+          </Button>
+        </>
       ),
     },
   ];
@@ -49,8 +72,8 @@ function TableUser(props) {
   const handleUpdateTable = (users) => {
     setListUser([users, ...listUser]);
   };
+
   const data = listUser;
-  // console.log(data);
   useEffect(() => {
     getUser(0);
   }, []);
@@ -62,6 +85,11 @@ function TableUser(props) {
       setTotalPages(res.total_page);
     }
     // console.log(data);
+  };
+
+  const handlePageClick = (event) => {
+    // console.log("Check Event: ", event);
+    getUser(+event.selected + 1);
   };
 
   // const getDataUser = (datauser) => {
@@ -82,16 +110,36 @@ function TableUser(props) {
         </button>
       </div>
       <div className="mt-5 container">
-        <Table columns={columns} dataSource={data} key="" />
+        <Table columns={columns} dataSource={data} key="" pagination={false} />
       </div>
       <ModalAddUser
         show={showModalAdd}
         handleClose={handleClose}
         handleUpdateTable={handleUpdateTable}
       />
-      <div className="d-none">
-        <UpdateUser listUser={listUser} setListUser={setListUser} />
+      <div className="d-flex justify-content-center mt-5">
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={totalPages}
+          pageCount={totalPages}
+          previousLabel="< previous"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+        />
       </div>
+      {/* <div className="d-none">
+        <UpdateUser listUser={listUser} setListUser={setListUser} />
+      </div> */}
     </>
   );
 }

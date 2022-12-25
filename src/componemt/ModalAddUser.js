@@ -15,10 +15,8 @@ const layout = {
 function ModalAddUser(props) {
   const { show, handleClose, handleUpdateTable } = props;
   const [form] = Form.useForm();
-  const [newUser, setNewUser] = useState({});
 
   const onFinish = async (values) => {
-    setNewUser(values);
     let res = await createUser(values);
     if (res && res.statusCode === 200) {
       handleUpdateTable(values);

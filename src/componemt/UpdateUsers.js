@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Radio } from "antd";
-import { getUserById } from "../Service/UserService";
+import { Form, Input, Button, Radio, Modal } from "antd";
+import { getUserById, updateUser, deleteUser } from "../Service/UserService";
+import { useParams, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { history } from "../App";
 const layout = {
   labelCol: {
     span: 8,
@@ -10,13 +13,21 @@ const layout = {
   },
 };
 function UpdateUser(props) {
-  const { listUser, setListUser } = props;
-  const [idUser, setIdUser] = useState(0);
-
   const [form] = Form.useForm();
+  var { id } = useParams();
+
+  const navigate = useNavigate();
+
+  const backList = () => {
+    navigate("/");
+  };
+
+  const buttomLayout = {
+    wrapperCol: { offset: 8, span: 16 },
+  };
+
   useEffect(() => {
-    console.log(listUser);
-    fillToForm(190);
+    fillToForm(id);
   }, []);
 
   const fillToForm = async (id) => {
@@ -33,9 +44,22 @@ function UpdateUser(props) {
     });
   };
 
-  const onFinish = (value) => {
-    form.resetFields();
-    console.log(value);
+  const onFinish = async (value) => {
+    let res = await updateUser(id, value);
+    backList();
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = async () => {
+    let res = await deleteUser(id);
+    setIsModalOpen(false);
+    backList();
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -142,13 +166,35 @@ function UpdateUser(props) {
             wrapperCol={{
               ...layout.wrapperCol,
               offset: 8,
+              span: 16,
             }}
           >
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
+            <Button
+              type="primary"
+              ghost
+              htmlType="button"
+              className="mx-3"
+              onClick={() => backList()}
+            >
+              Đóng
+            </Button>
+            <Button type="primary" danger htmlType="button" onClick={showModal}>
+              Xóa
+            </Button>
           </Form.Item>
         </Form>
+
+        <Modal
+          title="Basic Modal"
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          Đã chắc là muốn xóa chưa
+        </Modal>
       </div>
     </>
   );

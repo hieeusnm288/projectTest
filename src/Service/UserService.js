@@ -12,4 +12,12 @@ const getUserById = (id) => {
   return axios.get(`/employee/${id}`);
 };
 
-export { getAllUser, createUser, getUserById };
+const updateUser = (id, data) => {
+  return axios.put(`/employee/${id}`, data);
+};
+
+const deleteUser = (id) => {
+  return axios.delete(`/employee/${id}`);
+};
+
+export { getAllUser, createUser, getUserById, updateUser, deleteUser };

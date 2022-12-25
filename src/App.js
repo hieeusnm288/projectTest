@@ -3,11 +3,14 @@ import TableUser from "./componemt/TableUser";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import UpdateUser from "./componemt/UpdateUsers";
 import { ToastContainer } from "react-toastify";
+import { createBrowserHistory } from "history";
+
+export const history = createBrowserHistory();
 
 function App() {
   return (
     <div className="App">
-      <Routes>
+      <Routes history={history}>
         <Route path="/" element={<TableUser />} />
         <Route path="/student/:id" element={<UpdateUser />} />
       </Routes>
