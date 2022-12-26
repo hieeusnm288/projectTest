@@ -110,7 +110,7 @@ function TableUser(props) {
           onPageChange={handlePageClick}
           pageRangeDisplayed={3}
           pageCount={totalPages}
-          initialPage={pageF5}
+          initialPage={pageF5 ? pageF5 : 0}
           previousLabel="Previous"
           pageClassName="page-item"
           pageLinkClassName="page-link"
