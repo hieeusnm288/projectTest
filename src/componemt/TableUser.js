@@ -2,23 +2,16 @@ import { getAllUser } from "../Service/UserService";
 import { useEffect, useState } from "react";
 import { Table, Pagination, Button } from "antd";
 import ModalAddUser from "./ModalAddUser";
-import { history } from "../App";
 import ReactPaginate from "react-paginate";
-import { useNavigate } from "react-router-dom";
-
-import {
-  BrowserRouter as Router,
-  NavLink,
-  HistoryRouterProps,
-} from "react-router-dom";
-import { Navigate } from "react-router-dom";
-import UpdateUser from "./UpdateUsers";
-
+import { useNavigate, useParams } from "react-router-dom";
+// import queryString from "query-string";
 function TableUser(props) {
   const [listUser, setListUser] = useState([]);
   const [totalUsers, setTotalUser] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [showModalAdd, setShowModalAdd] = useState(false);
+  const [page, setPage] = useState(0);
+  const pageF5 = Number(useParams().page);
   const navigate = useNavigate();
 
   const pageUpdate = (datauser) => {
@@ -75,7 +68,7 @@ function TableUser(props) {
 
   const data = listUser;
   useEffect(() => {
-    getUser(0);
+    getUser(pageF5 + 1);
   }, []);
   const getUser = async (page) => {
     let res = await getAllUser(page);
@@ -88,16 +81,9 @@ function TableUser(props) {
   };
 
   const handlePageClick = (event) => {
-    // console.log("Check Event: ", event);
     getUser(+event.selected + 1);
+    navigate(`/${+event.selected}`);
   };
-
-  // const getDataUser = (datauser) => {
-  //   setListUser((data) => {
-  //     data.filter((user) => user.id === datauser.id);
-  //   });
-  // };
-
   return (
     <>
       <div className="d-flex justify-content-around mt-5">
@@ -120,11 +106,12 @@ function TableUser(props) {
       <div className="d-flex justify-content-center mt-5">
         <ReactPaginate
           breakLabel="..."
-          nextLabel="next >"
+          nextLabel="Next"
           onPageChange={handlePageClick}
-          pageRangeDisplayed={totalPages}
+          pageRangeDisplayed={3}
           pageCount={totalPages}
-          previousLabel="< previous"
+          initialPage={pageF5}
+          previousLabel="Previous"
           pageClassName="page-item"
           pageLinkClassName="page-link"
           previousClassName="page-item"
@@ -137,9 +124,6 @@ function TableUser(props) {
           activeClassName="active"
         />
       </div>
-      {/* <div className="d-none">
-        <UpdateUser listUser={listUser} setListUser={setListUser} />
-      </div> */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Form, Input, Button, Radio } from "antd";
+import { Modal, Form, Input, Button, Radio, DatePicker } from "antd";
 import { createUser } from "../Service/UserService";
 import { toast } from "react-toastify";
 
@@ -124,13 +124,15 @@ function ModalAddUser(props) {
               },
             ]}
           >
-            <Input />
+            <DatePicker />
           </Form.Item>
           <Form.Item
             label="Giới Tính"
+            name="gender"
             rules={[
               {
                 required: true,
+                message: "Please select an option!",
               },
             ]}
           >

@@ -12,6 +12,7 @@ function App() {
     <div className="App">
       <Routes history={history}>
         <Route path="/" element={<TableUser />} />
+        <Route path="/:page" element={<TableUser />} />
         <Route path="/student/:id" element={<UpdateUser />} />
       </Routes>
       <ToastContainer
